@@ -1,6 +1,8 @@
 import csv
 from pathlib import Path
 
+from scipy import stats
+
 from config import (DATASETS, ALGORITHMS, N_VALUES, EPSILON_VALUES, MIN_PTS, REPEATS, NOISE_RATIO)
 from data_generation import generate_dataset
 from timing import measure_total_time
@@ -9,8 +11,15 @@ from dbscan_quadtree import run_quadtree_dbscan
 from dbscan_boxgraph import run_boxgraph_dbscan
 
 
-RESULTS_PATH = Path("../results/results.csv")
+BASE_DIR = Path(__file__).resolve().parent
 
+RESULTS_PATH = (
+    BASE_DIR.parent
+    / "results"
+    / "results.csv"
+)
+
+print("Writing to:", RESULTS_PATH.resolve())
 
 def run_dbscan(points, epsilon, min_pts, algorithm):
     """
@@ -73,7 +82,7 @@ def write_header_if_needed():
                 "min_pts",
                 "repeat",
                 "init_time",
-               "query_time",
+                "query_time",
                 "clustering_time",
                 "total_time",
                 "num_clusters",
@@ -117,6 +126,10 @@ def run_experiments():
                             MIN_PTS,
                             algorithm,
                         )
+
+                        print(type(labels))
+                        print(type(stats))
+                        print(stats)
 
                         num_clusters, num_noise = count_clusters_and_noise(labels)
 
