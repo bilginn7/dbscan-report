@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from data_generation import generate_dataset
+from data_generation import generate_dataset_with_labels
 
 
 def plot_datasets() -> None:
@@ -18,16 +18,37 @@ def plot_datasets() -> None:
     ]
 
     for dataset_name, title in zip(datasets, titles):
-        points = generate_dataset(dataset_name, n=2000, random_state=0)
+        points, labels = generate_dataset_with_labels(
+            dataset_name,
+            n=2000,
+            random_state=0
+        )
 
         plt.figure(figsize=(5, 5))
-        plt.scatter(points[:, 0], points[:, 1], s=4)
+
+        for label in sorted(set(labels)):
+            label_points = points[labels == label]
+
+            if label == -1:
+                plt.scatter(
+                    label_points[:, 0],
+                    label_points[:, 1],
+                    s=4,
+                    label="noise"
+                )
+            else:
+                plt.scatter(
+                    label_points[:, 0],
+                    label_points[:, 1],
+                    s=4,
+                    label=f"component {label}"
+                )
 
         plt.title(title)
         plt.xlabel("x")
         plt.ylabel("y")
-
         plt.grid(True, linewidth=0.5, alpha=0.4)
+        plt.legend(markerscale=3, fontsize=8)
 
         plt.tight_layout()
         plt.savefig(f"../figures/{dataset_name}.pdf")
@@ -67,5 +88,5 @@ def plot_runtime_vs_n():
 
 
 if __name__ == "__main__":
-    #plot_datasets()
+    plot_datasets()
     plot_runtime_vs_n()
