@@ -1,22 +1,16 @@
-import numpy as np
-
-def region_query(points, idx, eps):
-
-    dists = np.linalg.norm(
-        points - points[idx],
-        axis=1
-    )
-
-    return np.where(dists <= eps)[0]
-
 from sklearn.cluster import DBSCAN
 
-def run_linear_dbscan(points, eps, min_pts):
+
+def run_linear_dbscan(points, epsilon, min_pts):
+    """
+    DBSCAN using brute-force range queries.
+    """
 
     model = DBSCAN(
-        eps=eps,
+        eps=epsilon,
         min_samples=min_pts,
-        algorithm="brute"
+        algorithm="brute",
+        metric="euclidean"
     )
 
     return model.fit_predict(points)
