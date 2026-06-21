@@ -4,6 +4,9 @@ from pathlib import Path
 from config import (DATASETS, ALGORITHMS, N_VALUES, EPSILON_VALUES, MIN_PTS, REPEATS, NOISE_RATIO)
 from data_generation import generate_dataset
 from timing import measure_total_time
+from dbscan_linear import run_linear_dbscan
+from dbscan_quadtree import run_quadtree_dbscan
+from dbscan_boxgraph import run_boxgraph_dbscan
 
 
 RESULTS_PATH = Path("../results/results.csv")
@@ -11,12 +14,33 @@ RESULTS_PATH = Path("../results/results.csv")
 
 def run_dbscan(points, epsilon, min_pts, algorithm):
     """
-    Temporary placeholder.
-
-    Member 2 must replace this with the real DBSCAN calls.
-    For now, this dummy version labels every point as noise.
+    Dispatch to the selected DBSCAN implementation.
     """
-    return [-1] * len(points)
+
+    if algorithm == "linear":
+        return run_linear_dbscan(
+            points,
+            epsilon,
+            min_pts
+        )
+
+    if algorithm == "quadtree":
+        return run_quadtree_dbscan(
+            points,
+            epsilon,
+            min_pts
+        )
+
+    if algorithm == "boxgraph":
+        return run_boxgraph_dbscan(
+            points,
+            epsilon,
+            min_pts
+        )
+
+    raise ValueError(
+        f"Unknown algorithm: {algorithm}"
+    )
 
 
 def count_clusters_and_noise(labels):
@@ -48,6 +72,9 @@ def write_header_if_needed():
                 "epsilon",
                 "min_pts",
                 "repeat",
+                "init_time",
+               "query_time",
+                "clustering_time",
                 "total_time",
                 "num_clusters",
                 "num_noise",
@@ -83,7 +110,7 @@ def run_experiments():
                             f"repeat={repeat}"
                         )
 
-                        labels, total_time = measure_total_time(
+                        labels, stats = measure_total_time(
                             run_dbscan,
                             points,
                             epsilon,
@@ -100,7 +127,10 @@ def run_experiments():
                             epsilon,
                             MIN_PTS,
                             repeat,
-                            total_time,
+                            stats["init_time"],
+                            stats["query_time"],
+                            stats["clustering_time"],
+                            stats["total_time"],
                             num_clusters,
                             num_noise,
                         ])
