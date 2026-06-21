@@ -1,9 +1,9 @@
 import csv
-import time
 from pathlib import Path
 
-from config import DATASETS, ALGORITHMS, N_VALUES, EPSILON_VALUES, MIN_PTS, REPEATS, NOISE_RATIO
+from config import (DATASETS, ALGORITHMS, N_VALUES, EPSILON_VALUES, MIN_PTS, REPEATS, NOISE_RATIO)
 from data_generation import generate_dataset
+from timing import measure_total_time
 
 
 RESULTS_PATH = Path("../results/results.csv")
@@ -13,24 +13,24 @@ def run_dbscan(points, epsilon, min_pts, algorithm):
     """
     Temporary placeholder.
 
-    Your teammate should replace this function with calls to the real
-    DBSCAN implementations:
-    - linear
-    - quadtree
-    - boxgraph
+    Member 2 must replace this with the real DBSCAN calls.
+    For now, this dummy version labels every point as noise.
     """
-    #raise NotImplementedError(f"Algorithm not connected yet: {algorithm}")
     return [-1] * len(points)
+
 
 def count_clusters_and_noise(labels):
     """
-    Count clusters and noise points from DBSCAN labels.
-    Assumes noise is labeled as -1.
+    Count the number of clusters and noise points.
+
+    DBSCAN convention:
+    - noise points have label -1
+    - cluster labels are usually 0, 1, 2, ...
     """
     unique_labels = set(labels)
 
-    num_noise = sum(1 for label in labels if label == -1)
     num_clusters = len(unique_labels - {-1})
+    num_noise = sum(1 for label in labels if label == -1)
 
     return num_clusters, num_noise
 
@@ -83,11 +83,14 @@ def run_experiments():
                             f"repeat={repeat}"
                         )
 
-                        start = time.perf_counter()
-                        labels = run_dbscan(points, epsilon, MIN_PTS, algorithm)
-                        end = time.perf_counter()
+                        labels, total_time = measure_total_time(
+                            run_dbscan,
+                            points,
+                            epsilon,
+                            MIN_PTS,
+                            algorithm,
+                        )
 
-                        total_time = end - start
                         num_clusters, num_noise = count_clusters_and_noise(labels)
 
                         append_result([
