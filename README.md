@@ -139,10 +139,7 @@ REPEATS = 3
 NOISE_RATIO = 0.25
 ```
 
-## License
-
-This project is open source and available under the MIT License.
-
-## Author
+## Authors
 
 bilginn7
+JanG1411
