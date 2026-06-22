@@ -141,5 +141,5 @@ NOISE_RATIO = 0.25
 
 ## Authors
 
-bilginn7
-JanG1411
+- bilginn7
+- JanG1411
