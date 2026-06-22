@@ -84,9 +84,10 @@ def plot_runtime_vs_n():
         plt.plot(part["n"], part["total_time"], marker="o", label=algorithm)
 
     plt.xlabel("Number of points")
-    plt.ylabel("Total running time (seconds)")
-    plt.title("Runtime vs number of points")
-    plt.grid(True, linewidth=0.5, alpha=0.4)
+    plt.ylabel("Average total runtime (s)")
+    plt.title("Runtime vs Number of Points")
+    plt.yscale("log")
+    plt.grid(True, which="both", alpha=0.4)
     plt.legend()
     plt.tight_layout()
     plt.savefig(FIGURES_DIR / "runtime_vs_n.pdf")
@@ -99,7 +100,7 @@ def plot_runtime_vs_epsilon():
 
     df = df[
         (df["dataset"] == "clean_blobs")
-        & (df["n"] == 10000)
+        & (df["n"] == 5000)
     ]
 
     grouped = (
@@ -128,7 +129,8 @@ def plot_runtime_vs_epsilon():
     plt.xlabel("Epsilon")
     plt.ylabel("Average total runtime (s)")
     plt.title("Runtime vs Epsilon")
-    plt.grid(True, alpha=0.4)
+    plt.yscale("log")
+    plt.grid(True, which="both", alpha=0.4)
     plt.legend()
 
     plt.tight_layout()
@@ -142,7 +144,7 @@ def plot_runtime_breakdown():
 
     df = df[
         (df["dataset"] == "clean_blobs")
-        & (df["n"] == 10000)
+        & (df["n"] == 5000)
         & (df["epsilon"] == 0.10)
     ]
 
@@ -162,9 +164,11 @@ def plot_runtime_breakdown():
         stacked=True,
         figsize=(7, 5)
     )
-
+    plt.xlabel("Algorithm")
     plt.ylabel("Time (s)")
     plt.title("Runtime Breakdown")
+    plt.grid(True, which="both", alpha=0.4)
+    plt.legend()
 
     plt.xticks(rotation=0)
 
@@ -212,7 +216,8 @@ def plot_runtime_vs_n_per_dataset():
             )
 
         plt.xlabel("Number of points")
-        plt.ylabel("Average runtime (s)")
+        plt.ylabel("Average total runtime (s)")
+        plt.yscale("log")
         plt.title(
             f"Runtime vs n ({dataset})"
         )
